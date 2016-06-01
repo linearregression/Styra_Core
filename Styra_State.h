@@ -21,9 +21,9 @@
 #define __STYRA_STATE_H__
 
 #include <Arduino.h>
-#include <StyraConfig.h>
-#include <StyraPointer.h>
-#include <StyraNativeController.h>
+#include <Styra_Config.h>
+#include <Styra_Pointer.h>
+#include <Styra_Controller.h>
 
 
 /* States for the StyraState */

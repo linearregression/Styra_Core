@@ -19,7 +19,7 @@
 
 #include "Styra_State.h"
  
-#define SERIAL_DEBUG
+//#define SERIAL_DEBUG
 
 /* HACK:  This function is a work around a ChromeOS bug that requires a shift report to be sent
  *  before sending a shifted character.  This has only been tested for the SEQ type, though it could
