@@ -19,7 +19,7 @@
 
 #include "Styra_State.h"
  
-//#define SERIAL_DEBUG
+#define SERIAL_DEBUG
 
 /* HACK:  This function is a work around a ChromeOS bug that requires a shift report to be sent
  *  before sending a shifted character.  This has only been tested for the SEQ type, though it could
@@ -45,21 +45,35 @@ void keyboardWriteCharacter(byte key) {
 
 
 StyraState::StyraState(StyraConfig * config_ptr, StyraPointer * pointer_ptr, StyraController * controller_ptr) {
-
   _styra_state = READY;
-
   _styra_controller = controller_ptr;
   _styra_pointer = pointer_ptr;
   _styra_config = config_ptr;
+
 }
 
 
 
 void StyraState::begin() {
+  pinMode(13,OUTPUT);
+  digitalWrite(13,LOW);
 #ifdef SERIAL_DEBUG
   Serial.println("Initializing Styra Controller Boards");
 #endif
   _styra_controller->begin();
+
+/* If button 0 is pressed, start the serial eeprom programmer. 
+ * This function all does not return, so a reset if required
+ *  after programming is complete. */
+ _styra_controller->update();
+
+  if (_styra_controller->getButtonState(0) == PRESSED) {
+#ifdef SERIAL_DEBUG
+  Serial.println("EEProm Programmer Started");
+#endif
+    digitalWrite(13,HIGH);
+    serial_programmer(_styra_config);
+  }
 #ifdef SERIAL_DEBUG
   Serial.println("Initializing Configuration Manager");
 #endif

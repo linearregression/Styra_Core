@@ -24,6 +24,8 @@
 #include <Styra_Config.h>
 #include <Styra_Pointer.h>
 #include <Styra_Controller.h>
+#include <avr/wdt.h>
+#include "serial_programmer.h"
 
 
 /* States for the StyraState */
