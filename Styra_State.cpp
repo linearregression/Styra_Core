@@ -109,7 +109,7 @@ void StyraState::begin() {
 void StyraState::update() {
   /* TODO:  The device_type needs to be looked up in the config for
    *   each macro, not set here for ALL macros. */
-    byte _styra_device_type = STYRA_MOUSE;
+    byte _styra_device_type = STYRA_KEYBOARD;
 
     _styra_pointer->update();
     uint8_t shift_mask_byte,shift_mask_offset;
