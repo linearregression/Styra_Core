@@ -107,13 +107,9 @@ void StyraState::begin() {
 }
 
 void StyraState::update() {
-  /* TODO:  The device_type needs to be looked up in the config for
-   *   each macro, not set here for ALL macros. */
-    byte _styra_device_type = STYRA_KEYBOARD;
-
     _styra_pointer->update();
     uint8_t shift_mask_byte,shift_mask_offset;
-    byte key;
+    byte key,action,device;
     _styra_controller->update();
     if (_styra_state == READY) {
         _current_button = _styra_controller->getPressedButton();
@@ -131,7 +127,10 @@ void StyraState::update() {
     if (_styra_state == LOOKUP_ACTION_TYPE) {
 
         _styra_macro.setMacro(_styra_config->getMacro(_current_button));
-        byte action = _styra_macro.getActionType();
+
+        action = _styra_macro.getActionType();
+        device = _styra_macro.getDeviceType();
+
         if (action == CLICK) {
             _styra_state = SEND_CLICK;
 #ifdef SERIAL_DEBUG
@@ -173,7 +172,7 @@ void StyraState::update() {
 
     if (_styra_state == SEND_CLICK) {
 
-        if (_styra_device_type == STYRA_MOUSE) {
+        if (device == STYRA_MOUSE) {
           Mouse.click();
         } else {
           while ((key = _styra_macro.getNextKey()) != 0) {
@@ -192,7 +191,7 @@ void StyraState::update() {
 
     if (_styra_state == SEND_DBL_CLICK) {
 
-      if (_styra_device_type == STYRA_MOUSE) {
+      if (device == STYRA_MOUSE) {
         Mouse.click();
         delay(DBL_CLICK_DELAY);
         Mouse.click();
@@ -231,7 +230,7 @@ void StyraState::update() {
     }
 
     if (_styra_state == SEND_LATCH) {
-      if (_styra_device_type == STYRA_MOUSE) {
+      if (device == STYRA_MOUSE) {
         Mouse.press();
       } else {
         while ((key = _styra_macro.getNextKey()) != 0) {
@@ -247,7 +246,7 @@ void StyraState::update() {
     }
 
     if (_styra_state == SET_WHEEL_LOCK) {
-      if (_styra_device_type == STYRA_MOUSE) {
+      if (device == STYRA_MOUSE) {
         _styra_pointer->enableWheelLock();
       }
         _styra_state = WAIT_WHEEL_LOCK_RELEASE;
@@ -258,7 +257,7 @@ void StyraState::update() {
 
 
     if (_styra_state == SEND_PRESS) {
-      if (_styra_device_type == STYRA_MOUSE) {
+      if (device == STYRA_MOUSE) {
         Mouse.press();
       } else {
         while ((key = _styra_macro.getNextKey()) != 0) {
@@ -315,7 +314,7 @@ void StyraState::update() {
     if (_styra_state == WAIT_PRESS_RELEASE) {
 
         if (_styra_controller->getButtonState(_current_button) == RELEASED) {
-          if (_styra_device_type == STYRA_MOUSE) {
+          if (device == STYRA_MOUSE) {
             Mouse.release();
           } else {
             Keyboard.releaseAll();
@@ -329,7 +328,7 @@ void StyraState::update() {
 
     if (_styra_state == SEND_LATCH_RELEASE) {
         if (_styra_controller->getButtonState(_current_button) == PRESSED) {
-          if (_styra_device_type == STYRA_MOUSE) {
+          if (device == STYRA_MOUSE) {
             Mouse.release();
           } else {
             Keyboard.releaseAll();
@@ -343,7 +342,7 @@ void StyraState::update() {
 
     if (_styra_state == SET_WHEEL_LOCK_RELEASE) {
         if (_styra_controller->getButtonState(_current_button) == PRESSED) {
-          if (_styra_device_type == STYRA_MOUSE) {
+          if (device == STYRA_MOUSE) {
             _styra_pointer->disableWheelLock();
           }
             _styra_state = WAIT_FINAL_RELEASE;
