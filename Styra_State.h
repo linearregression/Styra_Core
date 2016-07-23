@@ -79,6 +79,7 @@ private:
     byte _styra_state;
     StyraMacro _styra_macro;
     uint8_t _current_button;
+    uint8_t _device;
 
     StyraConfig * _styra_config;
     StyraPointer * _styra_pointer;
